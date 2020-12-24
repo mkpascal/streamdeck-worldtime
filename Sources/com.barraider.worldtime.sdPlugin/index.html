@@ -4,6 +4,8 @@
 <head>
     <title>BarRaider's World Time Clock</title>
     <meta charset="utf-8" />
+    <script src="./moment-with-locales.js"></script>
+    <script src="./moment-timezone-with-data.js"></script>
 </head>
 
 <body>
@@ -221,31 +223,13 @@
             },
 
             GetCityOffset: function (cityName) {
-                let url = 'http://worldtimeapi.org/api/timezone/' + cityName;
+                let offset = moment(moment()).tz(cityName).format('Z');
+                let hours = Number(offset.slice(0, 3));
+                let minutes = Number(offset.slice(-2));
+                let offsetMinutes = (hours * 60) + minutes; // Offset is now in minutes
+                cityOffset[cityName] = offsetMinutes;
 
-                fetch(url)
-                    .then(res => res.json())
-                    .catch(err => { 
-                        console.log('Invalid API Response Error');
-                        fetchFailed = true;
-                        lastFetchFailedTime = new Date();
-                    })
-                    .then((out) => {
-                        console.log('Received JSON ', out);
-                        let offset = out["utc_offset"];
-                        let hours = Number(offset.slice(0, 3));
-                        let minutes = Number(offset.slice(-2));
-                        let offsetMinutes = (hours * 60) + minutes; // Offset is now in minutes
-                        cityOffset[cityName] = offsetMinutes;
-                        console.log('Offset for' + cityName, offset, '-', offsetMinutes);
-                        fetchFailed = false;
-                    })
-                    .catch(err => { 
-                        console.log('Invalid JSON Parsing Error');
-                        fetchFailed = true;
-                        lastFetchFailedTime = new Date();
-                    });
-
+                fetchFailed = false;
             }
         };
 
