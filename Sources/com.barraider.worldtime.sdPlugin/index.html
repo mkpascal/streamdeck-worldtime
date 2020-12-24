@@ -223,7 +223,7 @@
             },
 
             GetCityOffset: function (cityName) {
-                let offset = moment(moment()).tz(cityName).format('Z');
+                let offset = moment().tz(cityName).format('Z');
                 let hours = Number(offset.slice(0, 3));
                 let minutes = Number(offset.slice(-2));
                 let offsetMinutes = (hours * 60) + minutes; // Offset is now in minutes
